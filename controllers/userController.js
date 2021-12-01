@@ -29,9 +29,13 @@ exports.signup = [
       if (err) {
         return next(err);
       }
-      res.json({
+      const token = jwt.sign({ user: body }, process.env.SECRET, {
+        expiresIn: "1d",
+      });
+      return res.json({
         message: "signup successful",
         user: req.user,
+        token,
       });
     })(req, res, next);
   },
