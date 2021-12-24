@@ -22,7 +22,10 @@ passport.use(
     },
     async (username, password, done) => {
       try {
-        const user = await User.create({ username, password });
+        const user = await User.create({
+          username,
+          password,
+        });
         return done(null, user);
       } catch (err) {
         done(err);
@@ -77,13 +80,17 @@ passport.use(
       clientID:
         "124435339268-1ga1pq3hmku8pcfgqrs6bnka86cv6v9r.apps.googleusercontent.com",
       clientSecret: "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",
-      callbackURL: "http://localhost:3000/google/callback",
+      callbackURL: "http://localhost:3000/auth/google/callback",
       passReqToCallback: true,
+      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     function (req, accessToken, refreshToken, profile, done) {
-      User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        return done(err, user);
-      });
+      User.findOrCreate(
+        { googleId: profile.id, username: profile.id },
+        function (err, user) {
+          return done(err, user);
+        }
+      );
     }
   )
 );
@@ -105,6 +112,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -116,4 +131,4 @@ app.use(function (req, res) {
   console.log(error);
   res.status(err.status || 500);
 });
-app.listen(3000, () => console.log("connected on 3000"));
+app.listen(3001, () => console.log("connected on 3001"));
