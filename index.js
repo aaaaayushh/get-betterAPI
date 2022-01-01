@@ -23,6 +23,7 @@ const localStrategy = require("passport-local").Strategy;
 const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const authRouter = require("./routes/auth");
+const postRouter = require("./routes/posts");
 passport.use(
   "signup",
   new localStrategy(
@@ -110,7 +111,7 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (user, done) {
   done(null, user);
 });
-var mongodb = `mongodb+srv://aaaaayush:aayush@cluster0.g2wlz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+var mongodb = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.g2wlz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "mongodb connection error"));
@@ -153,6 +154,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRouter);
+app.use("/post", postRouter);
 app.use(function (req, res) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "developement" ? err : {};
