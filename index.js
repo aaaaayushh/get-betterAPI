@@ -4,11 +4,21 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 var mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const multer = require("multer");
 const helmet = require("helmet");
-const GoogleStrategy = require("passport-google-oauth20");
 const User = require("./models/User");
+const uploadImage = require("./helpers/helpers");
+
+const multerMid = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
 
 var passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20");
 const localStrategy = require("passport-local").Strategy;
 const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
@@ -119,6 +129,24 @@ app.use((req, res, next) => {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
+});
+app.disable("x-powered-by");
+app.use(multerMid.single("file"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.post("/uploads", async (req, res, next) => {
+  try {
+    const myFile = req.file;
+    console.log(myFile);
+    const imageUrl = await uploadImage(myFile);
+    console.log(imageUrl);
+    res.status(200).json({
+      message: "Upload was successful",
+      data: imageUrl,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use(passport.initialize());
