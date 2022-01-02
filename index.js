@@ -135,20 +135,20 @@ app.disable("x-powered-by");
 app.use(multerMid.single("file"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.post("/uploads", async (req, res, next) => {
-  try {
-    const myFile = req.file;
-    console.log(myFile);
-    const imageUrl = await uploadImage(myFile);
-    console.log(imageUrl);
-    res.status(200).json({
-      message: "Upload was successful",
-      data: imageUrl,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+// app.post("/uploads", async (req, res, next) => {
+//   try {
+//     const myFile = req.file;
+//     console.log(myFile);
+//     const imageUrl = await uploadImage(myFile);
+//     console.log(imageUrl);
+//     res.status(200).json({
+//       message: "Upload was successful",
+//       data: imageUrl,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 app.use(passport.initialize());
 app.use(passport.session());

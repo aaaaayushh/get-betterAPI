@@ -1,5 +1,41 @@
 const { validationResult, body } = require("express-validator");
 const Post = require("../models/Post");
+const uploadImage = require("../helpers/helpers");
+
+exports.imgUpload = async (req, res, next) => {
+  try {
+    const myFile = req.file;
+    console.log(myFile);
+    // const reader = new global.FileReader();
+    // const fileBytes = [];
+    // const fileObj = {};
+    // reader.readAsArrayBuffer(myFile);
+    // reader.onloadend = (evt) => {
+    //   if (evt.target.readyState === FileReader.DONE) {
+    //     const arrayBuffer = evt.target.result;
+
+    //     const array = new Uint8Array(arrayBuffer);
+    //     for (const a of array) {
+    //       fileBytes.push(a);
+    //     }
+    //     fileObj = {
+    //       originalName: myFile.name,
+    //       mimetype: myFile.type,
+    //       buffer: fileBytes,
+    //       size: myFile.size,
+    //     };
+    //   }
+    // };
+    const imageUrl = await uploadImage(myFile);
+    console.log(imageUrl);
+    res.status(200).json({
+      message: "Upload was successful",
+      data: imageUrl,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 exports.createPost = [
   body("caption", "Field must not be empty")
     .trim()
