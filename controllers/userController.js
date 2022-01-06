@@ -9,7 +9,7 @@ exports.signupInfo = async (req, res, next) => {
   const user = await User.findOneAndUpdate(filter, update, {
     returnOriginal: false,
   });
-  return user;
+  return res.status(200).json({ user });
 };
 
 exports.signup = [
@@ -41,9 +41,10 @@ exports.signup = [
       const token = jwt.sign({ user: body }, process.env.SECRET, {
         expiresIn: "1d",
       });
+      console.log(user);
       return res.json({
         message: "signup successful",
-        user: req.user,
+        user: user,
         token,
       });
     })(req, res, next);
@@ -93,12 +94,14 @@ exports.logout = function (req, res) {
 
 exports.googleLogin = async function (req, res) {
   const existingUser = await User.findOne({ username: req.body.username });
-  if (existingUser) return;
+  if (existingUser) return res.json(existingUser);
   else {
     const user = {
       username: req.body.username,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
+      googleId: req.body.googleId,
+      profilePic: req.body.profilePic,
     };
     await User.create(user).then((res) => {
       return res.json({ user });

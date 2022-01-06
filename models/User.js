@@ -7,6 +7,7 @@ var UserSchema = new mongoose.Schema({
   firstname: { type: String, maxLength: 100 },
   lastname: { type: String, maxLength: 100 },
   googleId: { type: String },
+  profilePic: { type: String },
 });
 
 UserSchema.pre("save", async function (next) {
