@@ -53,7 +53,10 @@ exports.createPost = [
 ];
 exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate("user").populate("likes");
+    const posts = await Post.find()
+      .populate("user")
+      .populate("likes")
+      .populate("comments");
 
     res.status(200).json(posts);
   } catch (err) {
