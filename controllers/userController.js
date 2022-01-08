@@ -5,11 +5,23 @@ const passport = require("passport");
 
 exports.signupInfo = async (req, res, next) => {
   const filter = { username: req.body.username };
-  const update = { firstname: req.body.firstname, lastname: req.body.lastname };
+  const update = {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    profilePic: req.body.profilePic,
+  };
   const user = await User.findOneAndUpdate(filter, update, {
     returnOriginal: false,
   });
   return res.status(200).json({ user });
+};
+exports.getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    return res.status(200).json({ user });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.signup = [
@@ -118,10 +130,42 @@ exports.googleSignup = async function (req, res, next) {
       username: req.body.username,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
+      googleId: req.body.googleId,
+      profilePic: req.body.profilePic,
     };
     await User.create(user).then((res) => {
       // console.log(res);
       return res.json({ user });
     });
+  }
+};
+
+exports.addFriend = async function (req, res, next) {
+  try {
+    const res1 = await User.findByIdAndUpdate(
+      req.params.id,
+      { $push: { friends: req.body.userid } },
+      { safe: true, upsert: false, new: true }
+    );
+    const res2 = await User.findByIdAndUpdate(
+      req.body.userid,
+      { $push: { friends: req.params.id } },
+      { safe: true, upsert: false, new: true }
+    );
+    return res.status(200).json({ res1, res2 });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.searchUser = async function (req, res, next) {
+  try {
+    const users = await User.find({
+      firstname: { $regex: new RegExp(req.params.name, "i") },
+    });
+    console.log(users);
+    return res.status(200).json({ users });
+  } catch (err) {
+    console.log(err);
   }
 };

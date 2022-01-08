@@ -29,8 +29,8 @@ exports.createPost = [
       return res.json({ errors: errors.array() });
     } else {
       try {
-        var temp = await User.findOne({ username: req.body.user.email });
-        op = temp[0];
+        console.log(req.body.user);
+        var op = await User.findOne({ username: req.body.user.email });
         console.log(op);
       } catch (err) {
         console.log(err, "user not found");

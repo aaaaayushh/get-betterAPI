@@ -22,6 +22,7 @@ const localStrategy = require("passport-local").Strategy;
 const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
 const postRouter = require("./routes/posts");
 passport.use(
   "signup",
@@ -140,6 +141,7 @@ app.use(passport.session());
 
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
+app.use("/user", userRouter);
 app.use(function (req, res) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "developement" ? err : {};
