@@ -5,6 +5,8 @@ var router = express.Router();
 
 //get all posts
 router.get("/", postController.getPosts);
+//get posts by user
+router.get("/:userid", postController.getPostsByUser);
 //upload image
 router.post("/uploadImage", postController.imgUpload);
 //create a post

@@ -30,7 +30,7 @@ exports.createPost = [
     } else {
       try {
         console.log(req.body.user);
-        var op = await User.findOne({ username: req.body.user.email });
+        var op = await User.findById(req.body.user._id);
         console.log(op);
       } catch (err) {
         console.log(err, "user not found");
@@ -61,6 +61,17 @@ exports.getPosts = async (req, res) => {
     res.status(200).json(posts);
   } catch (err) {
     res.status(404).json({ message: err });
+  }
+};
+exports.getPostsByUser = async (req, res) => {
+  try {
+    const posts = await Post.find({ user: req.params.userid })
+      .populate("user")
+      .populate("likes")
+      .populate("comments");
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(404).json({ msg: err });
   }
 };
 exports.likePost = async (req, res) => {
