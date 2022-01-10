@@ -162,6 +162,7 @@ exports.searchUser = async function (req, res, next) {
   try {
     const users = await User.find({
       firstname: { $regex: new RegExp(req.params.name, "i") },
+      _id: { $nin: req.params.userid },
     });
     console.log(users);
     return res.status(200).json({ users });

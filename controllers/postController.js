@@ -60,7 +60,7 @@ exports.getPosts = async (req, res) => {
 
     res.status(200).json(posts);
   } catch (err) {
-    res.status(404).json({ message: err });
+    res.status(500).json({ message: err });
   }
 };
 exports.getPostsByUser = async (req, res) => {
@@ -71,7 +71,20 @@ exports.getPostsByUser = async (req, res) => {
       .populate("comments");
     res.status(200).json(posts);
   } catch (err) {
-    res.status(404).json({ msg: err });
+    res.status(500).json({ msg: err });
+  }
+};
+exports.getFriendsPosts = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userid);
+    console.log(user);
+    const posts = await Post.find({ user: { $in: user.friends } })
+      .populate("user")
+      .populate("likes")
+      .populate("comments");
+    return res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ msg: err });
   }
 };
 exports.likePost = async (req, res) => {
