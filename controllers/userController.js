@@ -170,3 +170,20 @@ exports.searchUser = async function (req, res, next) {
     console.log(err);
   }
 };
+
+exports.updateProfilePic = async function (req, res) {
+  try {
+    const result = await User.findByIdAndUpdate(
+      req.body.id,
+      {
+        profilePic: req.body.picUrl,
+      },
+      { safe: true, upsert: false, new: true }
+    );
+    console.log(result);
+    return res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ err });
+  }
+};
