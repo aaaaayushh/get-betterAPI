@@ -106,10 +106,13 @@ passport.use(
   )
 );
 passport.serializeUser(function (user, done) {
-  done(null, user);
+  done(null, user._id);
 });
-passport.deserializeUser(function (user, done) {
-  done(null, user);
+passport.deserializeUser(function (id, done) {
+  User.findById(id, (err, user) => {
+    console.log(user);
+    done(err, user);
+  });
 });
 var mongodb = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.g2wlz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });

@@ -17,7 +17,7 @@ exports.signupInfo = async (req, res, next) => {
 };
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).populate("friends");
     return res.status(200).json({ user });
   } catch (err) {
     console.log(err);
@@ -185,5 +185,15 @@ exports.updateProfilePic = async function (req, res) {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ err });
+  }
+};
+
+exports.getFriends = async function (req, res) {
+  try {
+    const user = await User.findById(req.params.id).populate("friends");
+    console.log(user);
+    return res.status(200).json(user.friends);
+  } catch (err) {
+    console.log(err);
   }
 };
