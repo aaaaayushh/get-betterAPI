@@ -46,7 +46,7 @@ exports.createPost = [
         }).save();
         res.status(200).json(post);
       } catch (err) {
-        res.status(409).json({ message: error });
+        res.status(500).json({ message: error });
       }
     }
   },

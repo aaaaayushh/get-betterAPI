@@ -1,5 +1,6 @@
 require("dotenv").config();
 var express = require("express");
+var http = require("http");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
@@ -8,14 +9,6 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const helmet = require("helmet");
 const User = require("./models/User");
-
-const multerMid = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
-});
-
 var passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
 const localStrategy = require("passport-local").Strategy;
@@ -24,6 +17,14 @@ const ExtractJWT = require("passport-jwt").ExtractJwt;
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const postRouter = require("./routes/posts");
+const messageRouter = require("./routes/message");
+
+const multerMid = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
 passport.use(
   "signup",
   new localStrategy(
@@ -145,10 +146,38 @@ app.use(passport.session());
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
 app.use("/user", userRouter);
+app.use("/message", messageRouter);
 app.use(function (req, res) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "developement" ? err : {};
   console.log(error);
   res.status(err.status || 500);
 });
-app.listen(3001, () => console.log("connected on 3001"));
+var http = http.Server(app);
+var io = require("socket.io")(http, {
+  cors: {
+    origin: "*",
+  },
+});
+io.on("connection", (socket) => {
+  //join a conversation
+  const { chatId } = socket.handshake.query;
+  // console.log("CHATID", chatId);
+  // console.log("SOCKETID",socket.id);
+  socket.join(chatId);
+  // socket.on("newChatMessage", (data) => {
+  //   io.in(chatId).emit("newChatMessage", data);
+  // });
+  //private message
+  socket.on("newChatMessage", (userId, data) => {
+    console.log("here", data);
+    socket.to(userId).emit("newChatMessage", data);
+  });
+
+  //leave if user closes socket
+  socket.on("disconnect", () => {
+    socket.leave(chatId);
+  });
+});
+// app.listen(3001, () => console.log("connected on 3001"));
+http.listen(3001, () => console.log("connected on 3001"));

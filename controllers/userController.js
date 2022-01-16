@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const { body, validationResult } = require("express-validator");
+const Message = require("../models/Message");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
