@@ -164,7 +164,7 @@ exports.searchUser = async function (req, res, next) {
     const users = await User.find({
       firstname: { $regex: new RegExp(req.params.name, "i") },
       _id: { $nin: req.params.userid },
-    });
+    }).populate("friends");
     console.log(users);
     return res.status(200).json({ users });
   } catch (err) {

@@ -6,4 +6,5 @@ const storage = new Storage({
   keyFilename: serviceKey,
   projectId: process.env.PROJECT_ID,
 });
+console.log(storage);
 module.exports = storage;
