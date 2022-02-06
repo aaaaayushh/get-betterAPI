@@ -65,34 +65,26 @@ exports.signup = [
 ];
 
 exports.login = async (req, res, next) => {
-  passport.authenticate(
-    "login",
-    {
-      successRedirect: "http://localhost:3001",
-      failureRedirect: "http://localhost:3001/login",
-      failureFlash: true,
-    },
-    async (err, user, info) => {
-      try {
-        if (err) {
-          return next(err);
-        }
-        if (!user) {
-          return res.send({ success: false, message: "authentication failed" });
-        }
-        req.login(user, { session: false }, async (error) => {
-          if (error) return next(error);
-          const body = { _id: user._id, username: user.username };
-          const token = jwt.sign({ user: body }, process.env.SECRET, {
-            expiresIn: "1d",
-          });
-          return res.json({ user, token });
-        });
-      } catch (error) {
-        return next(error);
+  passport.authenticate("login", async (err, user, info) => {
+    try {
+      if (err) {
+        return next(err);
       }
+      if (!user) {
+        return res.send({ success: false, message: "authentication failed" });
+      }
+      req.login(user, { session: false }, async (error) => {
+        if (error) return next(error);
+        const body = { _id: user._id, username: user.username };
+        const token = jwt.sign({ user: body }, process.env.SECRET, {
+          expiresIn: "1d",
+        });
+        return res.json({ user, token });
+      });
+    } catch (error) {
+      return next(error);
     }
-  )(req, res, next);
+  })(req, res, next);
 };
 
 exports.logout = function (req, res) {

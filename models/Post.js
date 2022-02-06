@@ -6,6 +6,6 @@ var PostSchema = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   caption: { type: String, required: true },
   image: { type: String },
-  createdAt: { type: Date, default: new Date() },
+  createdAt: { type: Date, default: Date.now },
 });
 module.exports = mongoose.model("Post", PostSchema);

@@ -4,6 +4,6 @@ var MessageSchema = new Schema({
   sender: { type: Schema.Types.ObjectId, ref: "User" },
   receiver: { type: Schema.Types.ObjectId, ref: "User" },
   body: { type: String, required: true },
-  created: { type: Date, default: new Date() },
+  created: { type: Date, default: Date.now },
 });
 module.exports = mongoose.model("Message", MessageSchema);
