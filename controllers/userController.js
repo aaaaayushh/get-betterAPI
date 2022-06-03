@@ -190,3 +190,22 @@ exports.getFriends = async function (req, res) {
     console.log(err);
   }
 };
+
+exports.predictGetBetter = async function(req,res){
+  console.log(req.body);
+  const mlData = Object.keys(req.body).map((key,index)=>{
+    return req.body[key];
+  });
+  console.log(mlData);
+  const getBetterPrediction = await fetch(" https://r1ms6x9kql.execute-api.ap-south-1.amazonaws.com/Prod/demoDocker",
+  {
+    method:"post",
+    headers:{"Content-Type":"application/json"},
+    body:mlData
+  }
+  ).then((res)=>{
+    console.log(res);
+    return res;
+  })
+  res.status(200).json(req.body);
+}
