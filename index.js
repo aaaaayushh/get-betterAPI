@@ -115,8 +115,11 @@ passport.deserializeUser(function (id, done) {
     done(err, user);
   });
 });
-var mongodb = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.g2wlz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+// var mongodb = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.g2wlz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+var mongodb = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0-shard-00-00.g2wlz.mongodb.net:27017,cluster0-shard-00-01.g2wlz.mongodb.net:27017,cluster0-shard-00-02.g2wlz.mongodb.net:27017/?ssl=true&replicaSet=atlas-tjc03g-shard-0&authSource=admin&retryWrites=true&w=majority`;
+
 mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
+
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "mongodb connection error"));
 
