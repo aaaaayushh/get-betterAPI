@@ -109,7 +109,7 @@ exports.googleLogin = async function (req, res) {
       profilePic: req.body.profilePic,
     };
     await User.create(user).then((res) => {
-      return res.json({ user });
+      return res.status(200).json({ user });
     });
   }
 };
@@ -128,7 +128,7 @@ exports.googleSignup = async function (req, res, next) {
     };
     await User.create(user).then((res) => {
       // console.log(res);
-      return res.json({ user });
+      return res.status(200).json({ user });
     });
   }
 };
