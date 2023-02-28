@@ -152,7 +152,7 @@ app.use("/user", userRouter);
 app.use("/message", messageRouter);
 app.use(function (req, res) {
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "developement" ? err : {};
+  res.locals.error = req.app.get("env") === "developement" ? err : err;
   console.log(error);
   res.status(err.status || 500);
 });
