@@ -150,9 +150,9 @@ app.use("/auth", authRouter);
 app.use("/post", postRouter);
 app.use("/user", userRouter);
 app.use("/message", messageRouter);
-app.use(function (req, res) {
+app.use(function (req, res, err) {
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "developement" ? err : err;
+  res.locals.error = err;
   console.log(err.message);
   res.status(err.status || 500);
 });
