@@ -150,12 +150,12 @@ app.use("/auth", authRouter);
 app.use("/post", postRouter);
 app.use("/user", userRouter);
 app.use("/message", messageRouter);
-app.use(function (req, res, err) {
-  res.locals.message = err.message;
-  res.locals.error = err;
-  console.log(err.message);
-  res.status(err.status || 500);
-});
+// app.use(function (req, res, err) {
+//   res.locals.message = err.message;
+//   res.locals.error = err;
+//   console.log(err.message);
+//   res.status(err.status || 500);
+// });
 var http = http.Server(app);
 var io = require("socket.io")(http, {
   cors: {
